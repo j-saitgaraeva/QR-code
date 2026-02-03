@@ -1,27 +1,39 @@
-// main.js
-
 import { generateMatrix } from "./qrMatrix.js";
 import { renderMatrixToPng } from "./qrRenderer.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.getElementById("qr-input");
-  const button = document.getElementById("qr-generate");
-  const img = document.getElementById("qr-result");
+const input = document.getElementById("urlInput");
+const generateBtn = document.getElementById("generateBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+const qrBox = document.getElementById("qr");
 
-  button.addEventListener("click", () => {
+let lastPngDataUrl = null;
+
+generateBtn.onclick = () => {
     const text = input.value.trim();
-    if (!text) {
-      alert("Введите текст для QR-кода");
-      return;
-    }
+    if (!text) return;
 
     try {
-      const matrix = generateMatrix(text);
-      const pngDataUrl = renderMatrixToPng(matrix, 150);
-      img.src = pngDataUrl;
+        const matrix = generateMatrix(text);
+        const png = renderMatrixToPng(matrix, 150);
+
+        lastPngDataUrl = png;
+
+        qrBox.innerHTML = `<img src="${png}" alt="QR code">`;
+
+        generateBtn.style.display = "none";
+        downloadBtn.style.display = "block";
+
     } catch (err) {
-      console.error(err);
-      alert("Ошибка при генерации QR-кода");
+        console.error(err);
+        alert("Ошибка при генерации QR-кода");
     }
-  });
-});
+};
+
+downloadBtn.onclick = () => {
+    if (!lastPngDataUrl) return;
+
+    const a = document.createElement("a");
+    a.href = lastPngDataUrl;
+    a.download = "qr.png";
+    a.click();
+};
