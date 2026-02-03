@@ -1,49 +1,55 @@
 // qrRenderer.js
 
-/**
- * Рендерит QR-матрицу в PNG 150x150 с прозрачным фоном.
- * matrix: двумерный массив boolean (true = чёрный модуль, false = пусто)
- * return: dataURL PNG (image/png)
- */
 export function renderMatrixToPng(matrix, sizePx = 150) {
   if (!Array.isArray(matrix) || matrix.length === 0) {
     throw new Error("Matrix is empty or invalid");
   }
 
-  const moduleCount = matrix.length; // количество модулей по одной стороне
+  const moduleCount = matrix.length;
   const canvas = document.createElement("canvas");
   canvas.width = sizePx;
   canvas.height = sizePx;
 
   const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    throw new Error("Canvas 2D context is not available");
-  }
-
-  // Прозрачный фон
   ctx.clearRect(0, 0, sizePx, sizePx);
 
-  // Размер одного модуля в пикселях
   const moduleSize = sizePx / moduleCount;
 
-  // Рисуем квадратные модули
+  // --- Шаг 4: определяем зоны глазков ---
+  const finderZones = [
+    { x: 0, y: 0 },
+    { x: moduleCount - 7, y: 0 },
+    { x: 0, y: moduleCount - 7 }
+  ];
+
+  function isInFinderZone(x, y) {
+    return finderZones.some(zone =>
+      x >= zone.x &&
+      x < zone.x + 7 &&
+      y >= zone.y &&
+      y < zone.y + 7
+    );
+  }
+
+  // --- Рисуем обычные модули, кроме глазков ---
   ctx.fillStyle = "black";
 
   for (let y = 0; y < moduleCount; y++) {
     for (let x = 0; x < moduleCount; x++) {
       if (!matrix[y][x]) continue;
+      if (isInFinderZone(x, y)) continue; // <-- исключаем глазки
 
       const x0 = Math.round(x * moduleSize);
       const y0 = Math.round(y * moduleSize);
-      const x1 = Math.round((x + 1) * moduleSize);
-      const y1 = Math.round((y + 1) * moduleSize);
-
-      const w = x1 - x0;
-      const h = y1 - y0;
+      const w = Math.ceil(moduleSize);
+      const h = Math.ceil(moduleSize);
 
       ctx.fillRect(x0, y0, w, h);
     }
   }
+
+  // --- На следующем шаге сюда вставим SVG глазков ---
+  // drawCustomFinder(ctx, moduleSize, finderZones);
 
   return canvas.toDataURL("image/png");
 }
