@@ -1,25 +1,97 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>QR Generator Prototype</title>
+    <meta charset="UTF-8">
+    <title>QR Generator</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 400px;
+            margin: 40px auto;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #qr {
+            margin-top: 30px;
+        }
+        #qr img {
+            width: 150px;
+            height: 150px;
+        }
+        #downloadBtn {
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
-  <h1>QR Generator Prototype</h1>
+    <h2>Генератор QR‑кодов</h2>
 
-  <input id="qr-input" type="text" placeholder="Введите текст" style="width: 300px;">
-  <button id="qr-generate">Сгенерировать</button>
+    <input id="urlInput" type="text" placeholder="Введите ссылку">
 
-  <div style="margin-top: 20px;">
-    <img id="qr-result" alt="QR code" />
-  </div>
+    <button id="generateBtn">Сгенерировать</button>
 
-  <!-- Библиотека для генерации матрицы -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.js"></script>
+    <div id="qr"></div>
 
-  <!-- Наш основной код -->
-  <script type="module" src="./main.js"></script>
+    <button id="downloadBtn">Скачать</button>
+
+    <!-- Библиотека для генерации матрицы -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.js"></script>
+
+    <!-- Наш основной код -->
+    <script type="module">
+        import { generateMatrix } from "./js/qrMatrix.js";
+        import { renderMatrixToPng } from "./js/qrRenderer.js";
+
+        const input = document.getElementById("urlInput");
+        const generateBtn = document.getElementById("generateBtn");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const qrBox = document.getElementById("qr");
+
+        let lastPngDataUrl = null;
+
+        generateBtn.onclick = () => {
+            const text = input.value.trim();
+            if (!text) return;
+
+            try {
+                const matrix = generateMatrix(text);
+                const png = renderMatrixToPng(matrix, 150);
+
+                lastPngDataUrl = png;
+
+                qrBox.innerHTML = `<img src="${png}" alt="QR code">`;
+
+                generateBtn.style.display = "none";
+                downloadBtn.style.display = "block";
+
+            } catch (err) {
+                console.error(err);
+                alert("Ошибка при генерации QR-кода");
+            }
+        };
+
+        downloadBtn.onclick = () => {
+            if (!lastPngDataUrl) return;
+
+            const a = document.createElement("a");
+            a.href = lastPngDataUrl;
+            a.download = "qr.png";
+            a.click();
+        };
+    </script>
 
 </body>
 </html>
