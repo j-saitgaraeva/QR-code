@@ -13,8 +13,9 @@ export async function renderQR(ctx, matrix) {
     const modules = matrix.length;
 
     // ЭТАП 1: внутренний canvas для пиксель‑перфект QR
-    const baseModuleSize = 5;
-    const internalSize = modules * baseModuleSize;
+    // Увеличиваем базовый модуль для высокой чёткости
+    const baseModuleSize = Math.floor(512 / modules);
+    const internalSize = baseModuleSize * modules;
 
     const internalCanvas = document.createElement("canvas");
     internalCanvas.width = internalSize;
