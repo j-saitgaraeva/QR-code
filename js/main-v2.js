@@ -1,39 +1,34 @@
-import { generateMatrix } from "./qrMatrix.js";
-import { renderMatrixToPng } from "./qrRenderer.js";
+import { renderQR } from './qrRenderer.js';
+import { createMatrix } from './qrMatrix.js';
 
-const input = document.getElementById("urlInput");
-const generateBtn = document.getElementById("generateBtn");
-const downloadBtn = document.getElementById("downloadBtn");
-const qrBox = document.getElementById("qr");
+const size = 165;              // ← новый размер
+const moduleSize = 5;          // ← 165 / 33 = 5 px
+const qrContainer = document.getElementById('qr');
+const downloadBtn = document.getElementById('downloadBtn');
 
-let lastPngDataUrl = null;
+document.getElementById('generateBtn').addEventListener('click', () => {
+    const url = document.getElementById('urlInput').value.trim();
+    if (!url) return;
 
-generateBtn.onclick = async () => {
-    const text = input.value.trim();
-    if (!text) return;
+    const matrix = createMatrix(url);
 
-    try {
-        const matrix = generateMatrix(text);
-        const png = await renderMatrixToPng(matrix, 150);
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
 
-        lastPngDataUrl = png;
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;   // ← важно для чёткости
 
-        qrBox.innerHTML = `<img src="${png}" alt="QR code">`;
+    renderQR(ctx, matrix, moduleSize);
 
-        generateBtn.style.display = "none";
-        downloadBtn.style.display = "block";
+    qrContainer.innerHTML = '';
+    qrContainer.appendChild(canvas);
 
-    } catch (err) {
-        console.error(err);
-        alert("Ошибка при генерации QR-кода");
-    }
-};
-
-downloadBtn.onclick = () => {
-    if (!lastPngDataUrl) return;
-
-    const a = document.createElement("a");
-    a.href = lastPngDataUrl;
-    a.download = "qr.png";
-    a.click();
-};
+    downloadBtn.style.display = 'block';
+    downloadBtn.onclick = () => {
+        const link = document.createElement('a');
+        link.download = 'qr.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    };
+});
