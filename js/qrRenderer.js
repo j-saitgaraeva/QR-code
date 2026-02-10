@@ -12,13 +12,11 @@ async function loadSvg(url) {
 export async function renderQR(ctx, matrix) {
     const modules = matrix.length;
 
-    // Выбираем целый размер модуля так, чтобы всё поместилось
-    // и модули были не слишком мелкими
-    const targetSize = 130; // желаемый визуальный размер
-    const moduleSize = Math.floor(targetSize / modules) || 1;
-    const canvasSize = moduleSize * modules;
+    // Фиксированный размер модуля в пикселях (целое число)
+    const moduleSize = 5;
+    const canvasSize = modules * moduleSize;
 
-    // Настраиваем реальный размер canvas под целые модули
+    // Настраиваем реальный размер canvas строго по модулям
     ctx.canvas.width = canvasSize;
     ctx.canvas.height = canvasSize;
 
@@ -33,6 +31,7 @@ export async function renderQR(ctx, matrix) {
     for (let r = 0; r < modules; r++) {
         for (let c = 0; c < modules; c++) {
 
+            // Зоны глаз: 9×9 модулей
             const inTopLeft = (r < 9 && c < 9);
             const inTopRight = (r < 9 && c >= modules - 9);
             const inBottomLeft = (r >= modules - 9 && c < 9);
@@ -50,10 +49,9 @@ export async function renderQR(ctx, matrix) {
         }
     }
 
-    // 2. Загружаем SVG глазка
+    // 2. Загружаем SVG глазка (35×35, 7×7 модулей по 5 px)
     const eye = await loadSvg("./js/eyes/eye.svg");
 
-    // Глаз = 7×7 модулей
     const eyeModules = 7;
     const eyePx = moduleSize * eyeModules;
 
