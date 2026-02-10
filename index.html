@@ -25,9 +25,11 @@
         #qr {
             margin-top: 30px;
         }
-        #qr img {
-            width: 150px;
-            height: 150px;
+        /* раньше было под img, теперь под canvas */
+        #qr canvas {
+            width: 165px;
+            height: 165px;
+            image-rendering: pixelated;
         }
         #downloadBtn {
             margin-top: 20px;
