@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>QR Generator</title>
+
     <style>
         body {
             font-family: sans-serif;
@@ -29,14 +30,14 @@
         #qr {
             margin-top: 30px;
             display: flex;
-            justify-content: center; /* центрируем QR */
+            justify-content: center;
         }
 
-        /* Сам canvas */
+        /* Сам canvas — теперь 130×130, как делает рендер */
         #qr canvas {
-            width: 165px;   /* фиксируем размер */
-            height: 165px;
-            display: block; /* убираем поведение inline */
+            width: 130px;
+            height: 130px;
+            display: block;
             image-rendering: pixelated; /* чёткие пиксели */
         }
 
@@ -46,6 +47,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <h2>Генератор QR‑кодов</h2>
