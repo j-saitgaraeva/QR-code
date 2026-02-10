@@ -16,18 +16,20 @@ export async function renderQR(ctx, matrix) {
     const canvasSize = ctx.canvas.width; // 165
     const moduleSize = canvasSize / modules; // 5px при 33×33
 
-    // Чистим фон
+    // Чистим фон (прозрачный)
     ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+    // Цвет модулей
     ctx.fillStyle = "#000";
 
-    // 1. Рисуем QR без глазков
+    // 1. Рисуем QR без зон глаз (оставляем 9×9 под каждый глаз)
     for (let r = 0; r < modules; r++) {
         for (let c = 0; c < modules; c++) {
 
-            // Пропускаем зоны глазков (8×8 модулей)
-            const inTopLeft = r < 8 && c < 8;
-            const inTopRight = r < 8 && c >= modules - 8;
-            const inBottomLeft = r >= modules - 8 && c < 8;
+            // Зоны глаз: 9×9 модулей
+            const inTopLeft = (r < 9 && c < 9);
+            const inTopRight = (r < 9 && c >= modules - 9);
+            const inBottomLeft = (r >= modules - 9 && c < 9);
 
             if (inTopLeft || inTopRight || inBottomLeft) continue;
 
@@ -42,33 +44,41 @@ export async function renderQR(ctx, matrix) {
         }
     }
 
-    // 2. Загружаем SVG глазка
+    // 2. Загружаем SVG глазка (35×35)
     const eye = await loadSvg("./js/eyes/eye.svg");
 
-    // Зона глазка = 8 модулей = 40px
-    const eyePx = 40;
+    // Глаз = 7×7 модулей
+    const eyeModules = 7;
+    const eyePx = moduleSize * eyeModules;
 
-    // 3. Рисуем глазки (offset = 0)
+    // Смещение на 1 модуль от края зоны (1 модуль — белый разделитель)
+    const offset = moduleSize;
+
+    // 3. Рисуем глазки
+
+    // Левый верхний
     ctx.drawImage(
         eye,
-        0,
-        0,
+        offset,
+        offset,
         eyePx,
         eyePx
     );
 
+    // Правый верхний
     ctx.drawImage(
         eye,
-        (modules - 8) * moduleSize,
-        0,
+        canvasSize - offset - eyePx,
+        offset,
         eyePx,
         eyePx
     );
 
+    // Левый нижний
     ctx.drawImage(
         eye,
-        0,
-        (modules - 8) * moduleSize,
+        offset,
+        canvasSize - offset - eyePx,
         eyePx,
         eyePx
     );
