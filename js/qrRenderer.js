@@ -46,39 +46,29 @@ export async function renderQR(ctx, matrix) {
     const eye = await loadSvg("./js/eyes/eye.svg");
 
     // Зона глазка = 8 модулей = 40px
-    const eyeZone = 8 * moduleSize;
+    const eyePx = 40;
 
-    // Вставляем SVG 1:1, без масштабирования
-    const eyePx = 35;
-
-    // Центрируем глазок внутри зоны
-    const offset = (eyeZone - eyePx) / 2;
-
-    // 3. Рисуем глазки
-
-    // Левый верхний
+    // 3. Рисуем глазки (offset = 0)
     ctx.drawImage(
         eye,
-        offset,
-        offset,
+        0,
+        0,
         eyePx,
         eyePx
     );
 
-    // Правый верхний
     ctx.drawImage(
         eye,
-        (modules - 8) * moduleSize + offset,
-        offset,
+        (modules - 8) * moduleSize,
+        0,
         eyePx,
         eyePx
     );
 
-    // Левый нижний
     ctx.drawImage(
         eye,
-        offset,
-        (modules - 8) * moduleSize + offset,
+        0,
+        (modules - 8) * moduleSize,
         eyePx,
         eyePx
     );
