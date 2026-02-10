@@ -31,10 +31,10 @@ export async function renderMatrixToPng(matrix, sizePx) {
 
             if (matrix[r][c] === 1) {
                 ctx.fillRect(
-                    Math.round(c * scale),
-                    Math.round(r * scale),
-                    Math.ceil(scale),
-                    Math.ceil(scale)
+                    c * scale,
+                    r * scale,
+                    scale,
+                    scale
                 );
             }
         }
@@ -43,10 +43,10 @@ export async function renderMatrixToPng(matrix, sizePx) {
     // 2. Загружаем SVG глазок
     const eye = await loadSvg("./js/eyes/eye.svg");
 
-    // Размер глазка = 8 модулей
+    // Размер зоны глазка = 8 модулей
     const eyePx = 8 * scale;
 
-    // 3. Рисуем три глазка
+    // 3. Рисуем глазки строго по сетке QR
 
     // Левый верхний
     ctx.drawImage(eye, 0, 0, eyePx, eyePx);
