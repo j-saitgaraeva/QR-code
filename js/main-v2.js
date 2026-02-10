@@ -1,8 +1,7 @@
 import { generateMatrix } from './qrMatrix.js';
 import { renderQR } from './qrRenderer.js';
 
-const size = 165;              // Размер QR-кода в пикселях
-const moduleSize = 5;          // 165 / 33 = 5 px на модуль
+const size = 165; // итоговый размер QR в пикселях
 
 const qrContainer = document.getElementById('qr');
 const downloadBtn = document.getElementById('downloadBtn');
@@ -16,20 +15,24 @@ generateBtn.addEventListener('click', async () => {
     // Генерируем матрицу QR
     const matrix = generateMatrix(url);
 
+    // Количество модулей (21, 25, 29, 33, 37...)
+    const modules = matrix.length;
+
+    // Вычисляем размер модуля так, чтобы QR всегда был ровно 165px
+    const moduleSize = size / modules;
+
     // Создаём canvas
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
 
     const ctx = canvas.getContext('2d');
-
-    // Важно: отключаем сглаживание, чтобы всё было пиксельно-чётко
     ctx.imageSmoothingEnabled = false;
 
-    // Рисуем QR-код с учётом зон под глазки и SVG-глазков
+    // Рисуем QR-код
     await renderQR(ctx, matrix, moduleSize);
 
-    // Показываем QR-код
+    // Показываем QR
     qrContainer.innerHTML = '';
     qrContainer.appendChild(canvas);
 
