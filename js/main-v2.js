@@ -1,8 +1,6 @@
 import { generateMatrix } from './qrMatrix.js';
 import { renderQR } from './qrRenderer.js';
 
-const size = 165;
-
 const qrContainer = document.getElementById('qr');
 const downloadBtn = document.getElementById('downloadBtn');
 const generateBtn = document.getElementById('generateBtn');
@@ -14,13 +12,12 @@ generateBtn.addEventListener('click', async () => {
 
     const matrix = generateMatrix(url);
 
+    // Создаём canvas БЕЗ фиксированного размера
     const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
 
+    // Рендер сам установит 130×130
     await renderQR(ctx, matrix);
 
     qrContainer.innerHTML = '';
