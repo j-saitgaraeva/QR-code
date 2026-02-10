@@ -12,22 +12,27 @@ async function loadSvg(url) {
 export async function renderQR(ctx, matrix) {
     const modules = matrix.length;
 
-    // ЭТАП 1: внутренний canvas для пиксель‑перфект QR
-    // Увеличиваем базовый модуль для высокой чёткости
-    const baseModuleSize = Math.floor(512 / modules);
-    const internalSize = baseModuleSize * modules;
+    // Выбираем целый размер модуля так, чтобы всё поместилось
+    // и модули были не слишком мелкими
+    const targetSize = 130; // желаемый визуальный размер
+    const moduleSize = Math.floor(targetSize / modules) || 1;
+    const canvasSize = moduleSize * modules;
 
-    const internalCanvas = document.createElement("canvas");
-    internalCanvas.width = internalSize;
-    internalCanvas.height = internalSize;
+    // Настраиваем реальный размер canvas под целые модули
+    ctx.canvas.width = canvasSize;
+    ctx.canvas.height = canvasSize;
 
-    const internalCtx = internalCanvas.getContext("2d");
-    internalCtx.clearRect(0, 0, internalSize, internalSize);
+    // Чистим фон (прозрачный)
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
+    ctx.imageSmoothingEnabled = false;
 
-    internalCtx.fillStyle = "#000";
+    // Цвет модулей
+    ctx.fillStyle = "#000";
 
+    // 1. Рисуем QR без зон глаз (оставляем 9×9 под каждый глаз)
     for (let r = 0; r < modules; r++) {
         for (let c = 0; c < modules; c++) {
+
             const inTopLeft = (r < 9 && c < 9);
             const inTopRight = (r < 9 && c >= modules - 9);
             const inBottomLeft = (r >= modules - 9 && c < 9);
@@ -35,65 +40,52 @@ export async function renderQR(ctx, matrix) {
             if (inTopLeft || inTopRight || inBottomLeft) continue;
 
             if (matrix[r][c] === 1) {
-                internalCtx.fillRect(
-                    c * baseModuleSize,
-                    r * baseModuleSize,
-                    baseModuleSize,
-                    baseModuleSize
+                ctx.fillRect(
+                    c * moduleSize,
+                    r * moduleSize,
+                    moduleSize,
+                    moduleSize
                 );
             }
         }
     }
 
-    // Вырезаем зоны под глазки
-    const eyeModules = 7;
-    const quietModules = 1;
-    const eyeBlockModules = eyeModules + quietModules * 2;
-    const eyeBlockSize = eyeBlockModules * baseModuleSize;
-
-    clearEyeZone(internalCtx, 0, 0, eyeBlockSize);
-    clearEyeZone(internalCtx, internalSize - eyeBlockSize, 0, eyeBlockSize);
-    clearEyeZone(internalCtx, 0, internalSize - eyeBlockSize, eyeBlockSize);
-
-    // Вставляем SVG‑глазки
+    // 2. Загружаем SVG глазка
     const eye = await loadSvg("./js/eyes/eye.svg");
 
-    const eyePx = eyeModules * baseModuleSize;
-    const offset = baseModuleSize;
+    // Глаз = 7×7 модулей
+    const eyeModules = 7;
+    const eyePx = moduleSize * eyeModules;
 
-    internalCtx.drawImage(eye, offset, offset, eyePx, eyePx);
-    internalCtx.drawImage(
-        eye,
-        internalSize - offset - eyePx,
-        offset,
-        eyePx,
-        eyePx
-    );
-    internalCtx.drawImage(
-        eye,
-        offset,
-        internalSize - offset - eyePx,
-        eyePx,
-        eyePx
-    );
+    // Смещение на 1 модуль от края зоны (1 модуль — белый разделитель)
+    const offset = moduleSize;
 
-    // ЭТАП 2: Масштабирование в DOM‑canvas до 130×130
-    const finalSize = 130;
+    // 3. Рисуем глазки
 
-    ctx.canvas.width = finalSize;
-    ctx.canvas.height = finalSize;
-
-    ctx.clearRect(0, 0, finalSize, finalSize);
-    ctx.imageSmoothingEnabled = false;
-
+    // Левый верхний
     ctx.drawImage(
-        internalCanvas,
-        0, 0, internalSize, internalSize,
-        0, 0, finalSize, finalSize
+        eye,
+        offset,
+        offset,
+        eyePx,
+        eyePx
     );
-}
 
-// Вспомогательная функция: очистка зоны под глазок
-function clearEyeZone(ctx, x, y, size) {
-    ctx.clearRect(x, y, size, size);
+    // Правый верхний
+    ctx.drawImage(
+        eye,
+        canvasSize - offset - eyePx,
+        offset,
+        eyePx,
+        eyePx
+    );
+
+    // Левый нижний
+    ctx.drawImage(
+        eye,
+        offset,
+        canvasSize - offset - eyePx,
+        eyePx,
+        eyePx
+    );
 }
