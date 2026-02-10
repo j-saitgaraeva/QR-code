@@ -1,10 +1,11 @@
-<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-    <!-- Внешний квадрат -->
-    <rect x="0" y="0" width="36" height="36" rx="6" fill="black"/>
-
-    <!-- Внутренний квадрат -->
-    <rect x="6" y="6" width="24" height="24" rx="4" fill="black"/>
-
-    <!-- Центральный квадрат -->
-    <rect x="12" y="12" width="12" height="12" rx="3" fill="black"/>
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_2474_3425)">
+<path d="M25.8945 0C31.4755 0 36 4.52449 36 10.1055V25.8945C36 31.4755 31.4755 36 25.8945 36H10.1055C4.52449 36 0 31.4755 0 25.8945V10.1055C0 4.52449 4.52449 0 10.1055 0H25.8945ZM10.6846 5C7.54527 5 5 7.54527 5 10.6846V25.3154C5 28.4547 7.54527 31 10.6846 31H25.3154C28.4547 31 31 28.4547 31 25.3154V10.6846C31 7.54527 28.4547 5 25.3154 5H10.6846Z" fill="black"/>
+<rect x="11" y="11" width="14" height="14" rx="3.78947" fill="black"/>
+</g>
+<defs>
+<clipPath id="clip0_2474_3425">
+<rect width="36" height="36" fill="white"/>
+</clipPath>
+</defs>
 </svg>
