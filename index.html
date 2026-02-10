@@ -10,27 +10,36 @@
             margin: 40px auto;
             text-align: center;
         }
+
         input {
             width: 100%;
             padding: 12px;
             font-size: 16px;
             margin-bottom: 20px;
         }
+
         button {
             width: 100%;
             padding: 12px;
             font-size: 16px;
             cursor: pointer;
         }
+
+        /* Контейнер QR */
         #qr {
             margin-top: 30px;
+            display: flex;
+            justify-content: center; /* центрируем QR */
         }
-        /* раньше было под img, теперь под canvas */
+
+        /* Сам canvas */
         #qr canvas {
-            width: 165px;
+            width: 165px;   /* фиксируем размер */
             height: 165px;
-            image-rendering: pixelated;
+            display: block; /* убираем поведение inline */
+            image-rendering: pixelated; /* чёткие пиксели */
         }
+
         #downloadBtn {
             margin-top: 20px;
             display: none;
@@ -52,7 +61,7 @@
     <!-- Библиотека QR -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.js"></script>
 
-    <!-- Подключаем ТОЛЬКО главный модуль -->
+    <!-- Главный модуль -->
     <script type="module" src="./js/main-v2.js"></script>
 
 </body>
