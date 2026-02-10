@@ -1,31 +1,41 @@
 import { generateMatrix } from './qrMatrix.js';
-import { renderQR } from './qrRenderer.js';
 
+// ТЕСТ: генерируем QR-матрицу и выводим её в консоль
+const testUrl = "https://t.me/blackufa_official";
+
+const matrix = generateMatrix(testUrl);
+
+console.log("Размер матрицы:", matrix.length, "x", matrix.length);
+console.log("Матрица:", matrix);
+
+// Рисуем матрицу без глазок, чтобы проверить, валиден ли QR
 const qrContainer = document.getElementById('qr');
-const downloadBtn = document.getElementById('downloadBtn');
-const generateBtn = document.getElementById('generateBtn');
-const urlInput = document.getElementById('urlInput');
 
-generateBtn.addEventListener('click', async () => {
-    const url = urlInput.value.trim();
-    if (!url) return;
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
 
-    const matrix = generateMatrix(url);
+const modules = matrix.length;
+const moduleSize = 5;
+const canvasSize = modules * moduleSize;
 
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    ctx.imageSmoothingEnabled = false;
+canvas.width = canvasSize;
+canvas.height = canvasSize;
 
-    await renderQR(ctx, matrix);
+ctx.fillStyle = "#000";
+ctx.imageSmoothingEnabled = false;
 
-    qrContainer.innerHTML = '';
-    qrContainer.appendChild(canvas);
+for (let r = 0; r < modules; r++) {
+    for (let c = 0; c < modules; c++) {
+        if (matrix[r][c] === 1) {
+            ctx.fillRect(
+                c * moduleSize,
+                r * moduleSize,
+                moduleSize,
+                moduleSize
+            );
+        }
+    }
+}
 
-    downloadBtn.style.display = 'block';
-    downloadBtn.onclick = () => {
-        const link = document.createElement('a');
-        link.download = 'qr.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-    };
-});
+qrContainer.innerHTML = "";
+qrContainer.appendChild(canvas);
