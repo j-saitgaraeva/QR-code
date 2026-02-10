@@ -1,6 +1,6 @@
 export function generateMatrix(text) {
-    // Версия 4, уровень коррекции H (более живучий код)
-    const qr = qrcode(4, "H");
+    // 0 = авто-версия, "H" = максимальная коррекция ошибок
+    const qr = qrcode(0, "H");
     qr.addData(text);
     qr.make();
 
