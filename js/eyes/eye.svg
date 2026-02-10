@@ -1,10 +1,5 @@
 <svg width="35" height="35" viewBox="0 0 35 35" xmlns="http://www.w3.org/2000/svg">
-  <!-- Внешний чёрный квадрат 7×7 модулей -->
   <rect x="0" y="0" width="35" height="35" fill="black"/>
-
-  <!-- Внутренний белый квадрат 5×5 модулей -->
   <rect x="5" y="5" width="25" height="25" fill="white"/>
-
-  <!-- Центральный чёрный квадрат 3×3 модулей -->
   <rect x="10" y="10" width="15" height="15" fill="black"/>
 </svg>
