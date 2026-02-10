@@ -12,9 +12,7 @@ async function loadSvg(url) {
 export async function renderQR(ctx, matrix) {
     const modules = matrix.length;
 
-    // === ЭТАП 1: внутренний canvas для пиксель‑перфект QR ===
-
-    // Базовый размер модуля для честного рендера
+    // ЭТАП 1: внутренний canvas для пиксель‑перфект QR
     const baseModuleSize = 5;
     const internalSize = modules * baseModuleSize;
 
@@ -25,13 +23,10 @@ export async function renderQR(ctx, matrix) {
     const internalCtx = internalCanvas.getContext("2d");
     internalCtx.clearRect(0, 0, internalSize, internalSize);
 
-    // Рисуем модули
     internalCtx.fillStyle = "#000";
 
     for (let r = 0; r < modules; r++) {
         for (let c = 0; c < modules; c++) {
-
-            // Зоны глаз: 9×9 модулей
             const inTopLeft = (r < 9 && c < 9);
             const inTopRight = (r < 9 && c >= modules - 9);
             const inBottomLeft = (r >= modules - 9 && c < 9);
@@ -49,7 +44,7 @@ export async function renderQR(ctx, matrix) {
         }
     }
 
-    // === ЭТАП 1.1: вырезаем зоны под глазки ===
+    // Вырезаем зоны под глазки
     const eyeModules = 7;
     const quietModules = 1;
     const eyeBlockModules = eyeModules + quietModules * 2;
@@ -59,16 +54,13 @@ export async function renderQR(ctx, matrix) {
     clearEyeZone(internalCtx, internalSize - eyeBlockSize, 0, eyeBlockSize);
     clearEyeZone(internalCtx, 0, internalSize - eyeBlockSize, eyeBlockSize);
 
-    // === ЭТАП 1.2: вставляем SVG‑глазки ===
+    // Вставляем SVG‑глазки
     const eye = await loadSvg("./js/eyes/eye.svg");
 
     const eyePx = eyeModules * baseModuleSize;
-    const offset = baseModuleSize; // 1 модуль разделителя
+    const offset = baseModuleSize;
 
-    // Левый верхний
     internalCtx.drawImage(eye, offset, offset, eyePx, eyePx);
-
-    // Правый верхний
     internalCtx.drawImage(
         eye,
         internalSize - offset - eyePx,
@@ -76,8 +68,6 @@ export async function renderQR(ctx, matrix) {
         eyePx,
         eyePx
     );
-
-    // Левый нижний
     internalCtx.drawImage(
         eye,
         offset,
@@ -86,15 +76,14 @@ export async function renderQR(ctx, matrix) {
         eyePx
     );
 
-    // === ЭТАП 2: Масштабирование в твой DOM‑canvas до фиксированного размера ===
-
-    const finalSize = 130; // фиксированный итоговый размер
+    // ЭТАП 2: Масштабирование в DOM‑canvas до 130×130
+    const finalSize = 130;
 
     ctx.canvas.width = finalSize;
     ctx.canvas.height = finalSize;
 
     ctx.clearRect(0, 0, finalSize, finalSize);
-    ctx.imageSmoothingEnabled = false; // чтобы не было мыла
+    ctx.imageSmoothingEnabled = false;
 
     ctx.drawImage(
         internalCanvas,
