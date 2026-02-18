@@ -1,100 +1,80 @@
 // =====================================================
-// 1. НАСТРОЙКА QR КОДА (создаём объект QRCodeStyling)
+// 1. БАЗОВЫЕ НАСТРОЙКИ (как в твоей рабочей версии)
 // =====================================================
-const qrCode = new QRCodeStyling({
+let qrCode; // сделаем глобальной для пересоздания
+
+function createQR(data = "https://example.com") {
+  qrCode = new QRCodeStyling({
+    // ДИНАМИЧЕСКИЙ РАЗМЕР — будет подстраиваться под матрицу
+    width: 320,
+    height: 320,
+    
+    type: "png",
+    data: data,
+    margin: 0,
+    qrOptions: {
+      errorCorrectionLevel: "M"
+    },
+    backgroundOptions: {
+      color: "rgba(0,0,0,0)"
+    },
+    dotsOptions: {
+      type: "square",
+      color: "#222222"
+    },
+    cornersSquareOptions: {
+      type: "extra-rounded",
+      color: "#222222"
+    },
+    cornersDotOptions: {
+      type: "square",
+      color: "#222222"
+    }
+  });
   
-  // Размер canvas'а (320x320 пикселей) — итоговый PNG будет такого размера
-  width: 320,
-  height: 320,
-  
-  // Формат по умолчанию для скачивания
-  type: "png",
-  
-  // Начальные данные (пока пользователь не введёт ссылку)
-  data: "https://example.com",
-  
-  // ← КЛЮЧЕВОЙ ПАРАМЕТР: убирает белый/прозрачный отступ вокруг QR
-  margin: 0,
-  
-  // НАСТРОЙКИ QR АЛГОРИТМА
-  qrOptions: {
-    // Уровень коррекции ошибок:
-    // M = 15% (отлично для обычных QR)
-    // H = 30% (для QR с логотипом до 25% площади)
-    errorCorrectionLevel: "M"
-  },
-  
-  // ФОН — ПРАЗРАЧНЫЙ (важно для наложения лого потом)
-  backgroundOptions: {
-    color: "rgba(0,0,0,0)"
-  },
-  
-  // ОСНОВНОЙ ПАТТЕРН (квадратики внутри QR)
-  dotsOptions: {
-    type: "square",    // классические квадратные модули
-    color: "#222222"   // чёрный цвет
-  },
-  
-  // РАМКА ГЛАЗКОВ (внешний контур угловых маркеров)
-  cornersSquareOptions: {
-    type: "extra-rounded", // скруглённый квадрат
-    color: "#222222"
-  },
-  
-  // ЦЕНТР ГЛАЗКОВ (внутренний элемент угловых маркеров)
-  cornersDotOptions: {
-    type: "square", // классические квадратные модули
-    color: "#222222"
-  }
-});
+  const container = document.getElementById("qr-container");
+  container.innerHTML = ""; // очищаем старый QR
+  qrCode.append(container);
+}
+
+// Создаём начальный QR
+createQR();
 
 // =====================================================
-// 2. ВСТАВЛЯЕМ QR В HTML КОНТЕЙНЕР
+// 2. ЭЛЕМЕНТЫ ИНТЕРФЕЙСА
 // =====================================================
-const container = document.getElementById("qr-container");
-qrCode.append(container);  // QR появляется на странице
+const input = document.getElementById("url-input");
+const downloadBtn = document.getElementById("download-btn");
 
 // =====================================================
-// 3. ПОЛУЧАЕМ ЭЛЕМЕНТЫ ИНТЕРФЕЙСА
-// =====================================================
-const input = document.getElementById("url-input");      // поле ввода ссылки
-const downloadBtn = document.getElementById("download-btn"); // кнопка "Скачать"
-
-// =====================================================
-// 4. ОБРАБОТЧИК КНОПКИ "СКАЧАТЬ"
+// 3. ДИНАМИЧЕСКАЯ ЛОГИКА: обработчик кнопки
 // =====================================================
 downloadBtn.addEventListener("click", async () => {
-  
-  // Получаем текст из поля ввода
   const value = (input.value || "").trim();
 
-  // Проверяем, что поле не пустое
   if (!value) {
     alert("Пожалуйста, введите ссылку.");
-    input.focus();  // фокус обратно в поле
+    input.focus();
     return;
   }
 
-  // НОРМАЛИЗУЕМ ССЫЛКУ (добавляем https:// если нет протокола)
-  const url =
-    /^https?:\/\//i.test(value) || /^mailto:/i.test(value)
-      ? value
-      : "https://" + value;
+  const url = /^https?:\/\/i.test(value) || /^mailto:/i.test(value)
+    ? value
+    : "https://" + value;
 
-  // ОБНОВЛЯЕМ QR КОД новыми данными
-  qrCode.update({
-    data: url
-  });
+  // ПЕРЕСОЗДАЁМ QR с новыми данными (убирает отступ)
+  createQR(url);
 
-  // СКАЧИВАЕМ PNG
-  try {
-    await qrCode.download({
-      extension: "png",     // формат файла
-      name: "qr-link"       // имя файла (qr-link.png)
-    });
-  } catch (e) {
-    // Обработка ошибок скачивания
-    console.error(e);
-    alert("Не удалось скачать QR‑код. Попробуйте ещё раз.");
-  }
+  // Ждём отрисовки и скачиваем
+  setTimeout(async () => {
+    try {
+      await qrCode.download({
+        extension: "png",
+        name: "qr-link"
+      });
+    } catch (e) {
+      console.error(e);
+      alert("Не удалось скачать QR‑код. Попробуйте ещё раз.");
+    }
+  }, 100); // небольшая задержка для полной отрисовки
 });
