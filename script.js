@@ -6,8 +6,8 @@ const qrCode = new QRCodeStyling({
   data: "https://example.com", // дефолт, пока пользователь не ввёл ссылку
   margin: 0,
   qrOptions: {
-    // баланс между надёжностью и размером файла
-    errorCorrectionLevel: "M"
+    // H = 30% коррекции — гарантированно выдержит лого до 25% площади
+    errorCorrectionLevel: "H"
   },
   backgroundOptions: {
     // полностью прозрачный фон
@@ -20,18 +20,13 @@ const qrCode = new QRCodeStyling({
   },
   // Рамка глазков — максимально «жирный» скруглённый квадрат
   cornersSquareOptions: {
-    /**
-     * Поддерживаемые типы зависят от версии библиотеки.
-     * Здесь ставим extra-rounded (или rounded, если extra-rounded не сработает).
-     * Это создаёт рамку с сильным радиусом, похожим на твой SVG.
-     */
     type: "extra-rounded",
     color: "#222222"
   },
-  // Центр глазков — скруглённый квадрат
+  // Центр глазков — твой любимый вариант
   cornersDotOptions: {
-    type: "classy-rounded", // все стили кроме "classy" делают круг
-    color: "#222222"
+    type: "square",
+    color: "222222"
   }
 });
 
