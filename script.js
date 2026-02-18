@@ -1,27 +1,27 @@
-// Настройки QR с H коррекцией И без рамки
+// Настройки QR с фиксированным стилем
 const qrCode = new QRCodeStyling({
   width: 320,
   height: 320,
   type: "png",
-  data: "https://example.com",
+  data: "https://example.com", 
   margin: 0,
   qrOptions: {
-    errorCorrectionLevel: "H"  // ← большой запас для лого
+    errorCorrectionLevel: "M" 
   },
   backgroundOptions: {
-    color: "rgba(0,0,0,0)"
+    color: "rgba(0,0,0,0)" 
   },
   dotsOptions: {
-    type: "square",
-    color: "#222222"
+    type: "square", 
+    color: "#000000"
   },
   cornersSquareOptions: {
-    type: "extra-rounded",  // ← как в первой версии (без extra-rounded)
-    color: "#222222"
+    type: "rounded", 
+    color: "#000000"
   },
   cornersDotOptions: {
-    type: "extra-rounded",  // ← как в первой версии
-    color: "#222222"
+    type: "rounded", 
+    color: "#000000"
   }
 });
 
