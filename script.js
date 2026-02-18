@@ -85,7 +85,7 @@ downloadBtn.addEventListener("click", async () => {
 
   // Нормализуем ссылку
   const url =
-    /^https?:\\\\/\\//i.test(value) || /^mailto:/i.test(value)
+    /^https?:\\/\\//i.test(value) || /^mailto:/i.test(value)
       ? value
       : "https://" + value;
 
