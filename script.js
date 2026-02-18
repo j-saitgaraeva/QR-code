@@ -1,14 +1,12 @@
 // =====================================================
-// 1. БАЗОВЫЕ НАСТРОЙКИ (как в твоей рабочей версии)
+// 1. НАСТРОЙКА QR КОДА (создаём объект QRCodeStyling)
 // =====================================================
-let qrCode; // сделаем глобальной для пересоздания
+let qrCode;
 
 function createQR(data = "https://example.com") {
   qrCode = new QRCodeStyling({
-    // ДИНАМИЧЕСКИЙ РАЗМЕР — будет подстраиваться под матрицу
     width: 320,
     height: 320,
-    
     type: "png",
     data: data,
     margin: 0,
@@ -33,11 +31,10 @@ function createQR(data = "https://example.com") {
   });
   
   const container = document.getElementById("qr-container");
-  container.innerHTML = ""; // очищаем старый QR
+  container.innerHTML = "";
   qrCode.append(container);
 }
 
-// Создаём начальный QR
 createQR();
 
 // =====================================================
@@ -47,7 +44,7 @@ const input = document.getElementById("url-input");
 const downloadBtn = document.getElementById("download-btn");
 
 // =====================================================
-// 3. ДИНАМИЧЕСКАЯ ЛОГИКА: обработчик кнопки
+// 3. ОБРАБОТЧИК КНОПКИ (ИСПРАВЛЕННАЯ СТРОКА)
 // =====================================================
 downloadBtn.addEventListener("click", async () => {
   const value = (input.value || "").trim();
@@ -58,14 +55,14 @@ downloadBtn.addEventListener("click", async () => {
     return;
   }
 
-  const url = /^https?:\/\/i.test(value) || /^mailto:/i.test(value)
-    ? value
-    : "https://" + value;
+  // ← ИСПРАВЛЕНО: один слеш вместо двух
+  const url =
+    /^https?:\/\//i.test(value) || /^mailto:/i.test(value)
+      ? value
+      : "https://" + value;
 
-  // ПЕРЕСОЗДАЁМ QR с новыми данными (убирает отступ)
   createQR(url);
 
-  // Ждём отрисовки и скачиваем
   setTimeout(async () => {
     try {
       await qrCode.download({
@@ -76,5 +73,5 @@ downloadBtn.addEventListener("click", async () => {
       console.error(e);
       alert("Не удалось скачать QR‑код. Попробуйте ещё раз.");
     }
-  }, 100); // небольшая задержка для полной отрисовки
+  }, 100);
 });
