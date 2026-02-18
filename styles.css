@@ -87,9 +87,9 @@ body {
 
 .qr-container {
   display: inline-block;
-  padding: 12px;
   border-radius: 24px;
   background: #f9fafb;
+  /* Убрали padding: 12px — теперь QR вплотную к краю */
 }
 
 .hint {
@@ -106,7 +106,6 @@ body {
 }
 
 /* Мобильная адаптация */
-
 @media (max-width: 480px) {
   .app {
     margin: 16px;
