@@ -83,11 +83,10 @@ downloadBtn.addEventListener("click", async () => {
     return;
   }
 
-  // Нормализуем ссылку
-  const url =
-    /^https?:\\/\\//i.test(value) || /^mailto:/i.test(value)
-      ? value
-      : "https://" + value;
+  // ✅ ИСПРАВЛЕНО: правильное экранирование слешей
+  const url = /^https?:\/\//i.test(value) || /^mailto:/i.test(value)
+    ? value
+    : "https://" + value;
 
   // Обновляем QR
   qrCode.update({ data: url });
