@@ -1,67 +1,41 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>QR Generator</title>
-
-    <style>
-        body {
-            font-family: sans-serif;
-            max-width: 400px;
-            margin: 40px auto;
-            text-align: center;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        #qr {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-        }
-
-        #qr canvas {
-            width: 130px;
-            height: 130px;
-            image-rendering: pixelated;
-        }
-
-        #downloadBtn {
-            margin-top: 20px;
-            display: none;
-        }
-    </style>
-
-    <!-- Рабочая библиотека QR -->
-    <script src="https://cdn.jsdelivr.net/npm/qrjs2/qrjs2.min.js"></script>
+  <meta charset="UTF-8" />
+  <title>QR Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- CDN qr-code-styling -->
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
 </head>
-
 <body>
+  <div class="app">
+    <h1 class="title">QR‑код из ссылки</h1>
 
-    <h2>Генератор QR‑кодов</h2>
+    <label class="field">
+      <span class="field-label">Вставьте ссылку</span>
+      <input
+        id="url-input"
+        type="url"
+        placeholder="https://example.com"
+        autocomplete="off"
+      />
+    </label>
 
-    <input id="urlInput" type="text" placeholder="Введите ссылку">
+    <button id="download-btn" class="btn">Скачать PNG</button>
 
-    <button id="generateBtn">Сгенерировать</button>
+    <div class="preview-wrapper">
+      <div id="qr-container" class="qr-container"></div>
+      <p class="hint">
+        Введите ссылку и нажмите «Скачать». PNG будет с прозрачным фоном.
+      </p>
+    </div>
 
-    <div id="qr"></div>
+    <p class="footer">
+      Хостинг: GitHub Pages. Код без бэкенда, только HTML/CSS/JS.
+    </p>
+  </div>
 
-    <button id="downloadBtn">Скачать</button>
-
-    <!-- ВАЖНО: main.js должен быть ПОД элементами -->
-    <script src="./js/main.js"></script>
-
+  <script src="script.js"></script>
 </body>
 </html>
