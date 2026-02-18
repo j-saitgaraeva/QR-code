@@ -16,7 +16,7 @@ const qrCode = new QRCodeStyling({
   dotsOptions: {
     // квадратный паттерн модулей, как классический QR
     type: "square",
-    color: "#6B6861"
+    color: "#222222"
   },
   // Рамка глазков — максимально «жирный» скруглённый квадрат
   cornersSquareOptions: {
@@ -26,12 +26,12 @@ const qrCode = new QRCodeStyling({
      * Это создаёт рамку с сильным радиусом, похожим на твой SVG.
      */
     type: "extra-rounded",
-    color: "#6B6861"
+    color: "#222222"
   },
   // Центр глазков — скруглённый квадрат
   cornersDotOptions: {
     type: "classy-rounded", // все стили кроме "classy" делают круг
-    color: "#6B6861"
+    color: "#222222"
   }
 });
 
