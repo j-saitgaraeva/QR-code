@@ -1,4 +1,3 @@
-// Базовые настройки QR с фиксированным стилем глазков
 const qrCode = new QRCodeStyling({
   width: 320,
   height: 320,
@@ -6,8 +5,7 @@ const qrCode = new QRCodeStyling({
   data: "https://example.com",
   margin: 0,
   qrOptions: {
-    errorCorrectionLevel: "H",     // для лого
-    typeNumber: 10                 // ← убирает отступ!
+    errorCorrectionLevel: "H"  // только это для лого
   },
   backgroundOptions: {
     color: "rgba(0,0,0,0)"
@@ -34,23 +32,15 @@ const downloadBtn = document.getElementById("download-btn");
 
 downloadBtn.addEventListener("click", async () => {
   const raw = (input.value || "").trim();
-
   if (!raw) {
     alert("Пожалуйста, введите ссылку.");
     input.focus();
     return;
   }
-
-  const url =
-    /^https?:\/\//i.test(raw) || /^mailto:/i.test(raw) ? raw : "https://" + raw;
-
+  const url = /^https?:\/\//i.test(raw) || /^mailto:/i.test(raw) ? raw : "https://" + raw;
   qrCode.update({ data: url });
-
   try {
-    await qrCode.download({
-      name: "qr-link",
-      extension: "png"
-    });
+    await qrCode.download({ name: "qr-link", extension: "png" });
   } catch (err) {
     console.error(err);
     alert("Не удалось скачать QR‑код. Попробуйте ещё раз.");
